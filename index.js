@@ -47,6 +47,7 @@ app.post('/longurl', (req, res) => {
 
 
             urlBody.shortUrl = shortUrl;
+            urlBody.redirectedUrl = "http://localhost:3000/"+ shortUrl;
             db.collection('allurl').findOne({ "shortUrl": shortUrl }, (err, value) => {
                 if (err) throw err;
 
@@ -76,6 +77,7 @@ app.post('/longurl', (req, res) => {
 });
 
 app.get('/url', (req, res) => {
+    //console.log("in");
     mongoClient.connect(url, { useNewUrlParser: true },(err, client) => {
         if (err) throw err;
 
@@ -91,6 +93,35 @@ app.get('/url', (req, res) => {
     })
 })
 
+app.get("/:shortUrl", (req, res) => {
+
+    //console.log(req.params.shortUrl);
+    mongoClient.connect(url, (err, client) => {
+        if(err) throw err;
+        var db = client.db("urlDb");
+        db.collection('allurl').findOne({"shortUrl":req.params.shortUrl}, (err, data) => {
+            if(err) throw err;
+            client.close();
+            res.redirect(data.long);
+        })
+    })
+})
+
+app.delete("/:shortUrl", (req, res) => {
+    //console.log(req.params.shortUrl);
+    mongoClient.connect(url, (err, client) => {
+        if(err) throw err;
+        var db = client.db('urlDb');
+        db.collection('allurl').deleteOne({"shortUrl":req.params.shortUrl}, (err, data) => {
+            if(err) throw err;
+            client.close();
+            res.json({
+                message : "Deleted"
+            })
+        })
+    })
+})
+
 app.listen(process.env.PORT, () => {
-    console.log("app running at port");
+    //console.log("app running at port");
 })
