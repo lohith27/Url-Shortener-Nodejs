@@ -47,17 +47,17 @@ app.post('/longurl', (req, res) => {
 
 
             urlBody.shortUrl = shortUrl;
-            urlBody.redirectedUrl = "http://localhost:3000/"+ shortUrl;
+            urlBody.redirectedUrl = "https://loh-url-shortener.herokuapp.com/"+ shortUrl;
             db.collection('allurl').findOne({ "shortUrl": shortUrl }, (err, value) => {
                 if (err) throw err;
 
                 if (value) {
-                    console.log(value);
+                    //console.log(value);
                     console.log("Sorry the no already exists");
                 }
                 else {
-                    console.log(value);
-                    console.log("success");
+                    //console.log(value);
+                    //console.log("success");
                     matched = true;
                     db.collection('allurl').insertOne(urlBody, (err, data) => {
                         if (err) throw err;
